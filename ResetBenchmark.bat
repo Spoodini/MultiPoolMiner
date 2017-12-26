@@ -1,3 +1,4 @@
+
 @echo off
 cd /d %~dp0
 set /p benchreset= This process will remove all benchmarking data. Are you sure you want to continue? [Y/N] 

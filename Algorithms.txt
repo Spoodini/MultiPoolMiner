@@ -1,3 +1,4 @@
+
 {
     "bitcore":  "Bitcore",
     "blake":  "Blakecoin",
